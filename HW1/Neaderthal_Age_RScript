@@ -1,0 +1,70 @@
+
+# Загрузка FASTA файла
+fasta_file <- "C:/Users/Катерина/Downloads/alighment2.fasta"  
+
+# Определение референсного сиквенса
+reference_id <- "KX198087.1 Homo sapiens neanderthalensis isolate GoyetQ305-4 mitochondrion, complete genome"
+
+# Идентификаторы, которые нужно исключить из анализа
+exclude_id <- list("KT780370.1 Homo sapiens ssp. Denisova isolate Denisova8 mitochondrion complete genome", "FN673705.1 Homo sp. Altai complete mitochondrial genome sequence from Denisova, Altai Russia", "FR695060.1 Homo sp. Altai complete mitochondrial genome, isolate Denisova molar", "KX198088.1 Homo sapiens neanderthalensis isolate GoyetQ57-2 mitochondrion, complete genome", "KX198087.1 Homo sapiens neanderthalensis isolate GoyetQ305-4 mitochondrion, complete genome", "KX198086.1 Homo sapiens neanderthalensis isolate GoyetQ305-7 mitochondrion, complete genome", "KX198085.1 Homo sapiens neanderthalensis isolate GoyetQ374a-1 mitochondrion, complete genome", "KX198084.1 Homo sapiens neanderthalensis isolate GoyetQ56-1 mitochondrion, complete genome")
+
+# Функция для чтения FASTA-файла и разбивки на список последовательностей
+read_fasta <- function(file_path) {
+  lines <- readLines(file_path)
+  sequences <- list()
+  current_id <- NULL
+  current_seq <- ""
+  
+  for (line in lines) {
+    if (startsWith(line, ">")) {
+      if (!is.null(current_id)) {
+        sequences[[current_id]] <- current_seq
+      }
+      current_id <- substring(line, 2)  # Удаляем '>'
+      current_seq <- ""
+    } else {
+      current_seq <- paste0(current_seq, line)
+    }
+  }
+  
+  if (!is.null(current_id)) {
+    sequences[[current_id]] <- current_seq
+  }
+  
+  return(sequences)
+}
+
+# Функция для подсчета различий между двумя последовательностями
+count_differences <- function(seq1, seq2) {
+  len <- min(nchar(seq1), nchar(seq2))
+  differences <- 0
+  
+  for (i in 1:len) {
+    if (substr(seq1, i, i) != substr(seq2, i, i)) {
+      differences <- differences + 1
+    }
+  }
+  print(differences)
+  return(differences + abs(nchar(seq1) - nchar(seq2)))
+}
+
+# Чтение FASTA-файла
+sequences <- read_fasta(fasta_file)
+
+# Получение референсной последовательности
+reference_sequence <- sequences[[reference_id]]
+
+# Создание map для хранения количества отличий
+differences_map <- list()
+
+# Сравнение каждой последовательности с референсной
+for (id in names(sequences)) {
+  if (!(id %in% exclude_id)) {
+    seq <- sequences[[id]]
+    differences <- count_differences(reference_sequence, seq)
+    differences_map[[id]] <- differences
+  }
+}
+
+# Вывод результатов
+print(((mean(unlist(differences_map))/2)/16566)/(1.3*10^(-8)))
