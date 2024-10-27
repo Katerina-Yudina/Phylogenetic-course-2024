@@ -1,105 +1,67 @@
-\# Загрузка FASTA файла
+# Загрузка FASTA файла
+fasta_file <- "C:/Users/Катерина/Downloads/alighment.fasta"  # Замените на ваш файл
 
-fasta_file <- "C:/Users/Катерина/Downloads/alighment.fasta" # Замените на ваш файл
-
-\# Определение референсного сиквенса
-
+# Определение референсного сиквенса
 reference_id <- "FJ713601.1 Homo sapiens haplogroup L1c1d mitochondrion, complete genome"
 
-\# Функция для чтения FASTA-файла и разбивки на список последовательностей
-
+# Функция для чтения FASTA-файла и разбивки на список последовательностей
 read_fasta <- function(file_path) {
-
-lines <- readLines(file_path)
-
-sequences <- list()
-
-current_id <- NULL
-
-current_seq <- ""
-
-for (line in lines) {
-
-if (startsWith(line, ">")) {
-
-if (!is.null(current_id)) {
-
-sequences\[\[current_id\]\] <- current_seq
-
+  lines <- readLines(file_path)
+  sequences <- list()
+  current_id <- NULL
+  current_seq <- ""
+  
+  for (line in lines) {
+    if (startsWith(line, ">")) {
+      if (!is.null(current_id)) {
+        sequences[[current_id]] <- current_seq
+      }
+      current_id <- substring(line, 2)  # Удаляем '>'
+      current_seq <- ""
+    } else {
+      current_seq <- paste0(current_seq, line)
+    }
+  }
+  
+  if (!is.null(current_id)) {
+    sequences[[current_id]] <- current_seq
+  }
+  
+  return(sequences)
 }
 
-current_id &lt;- substring(line, 2) # Удаляем '&gt;'
-
-current_seq <- ""
-
-} else {
-
-current_seq <- paste0(current_seq, line)
-
-}
-
-}
-
-if (!is.null(current_id)) {
-
-sequences\[\[current_id\]\] <- current_seq
-
-}
-
-return(sequences)
-
-}
-
-\# Функция для подсчета различий между двумя последовательностями
-
+# Функция для подсчета различий между двумя последовательностями
 count_differences <- function(seq1, seq2) {
-
-len <- min(nchar(seq1), nchar(seq2))
-
-differences <- 0
-
-for (i in 1:len) {
-
-if (substr(seq1, i, i) != substr(seq2, i, i)) {
-
-differences <- differences + 1
-
+  len <- min(nchar(seq1), nchar(seq2))
+  differences <- 0
+  
+  for (i in 1:len) {
+    if (substr(seq1, i, i) != substr(seq2, i, i)) {
+      differences <- differences + 1
+    }
+  }
+  
+  return(differences + abs(nchar(seq1) - nchar(seq2)))
 }
 
-}
-
-return(differences + abs(nchar(seq1) - nchar(seq2)))
-
-}
-
-\# Чтение FASTA-файла
-
+# Чтение FASTA-файла
 sequences <- read_fasta(fasta_file)
 
-\# Получение референсной последовательности
+# Получение референсной последовательности
+reference_sequence <- sequences[[reference_id]]
 
-reference_sequence <- sequences\[\[reference_id\]\]
-
-\# Создание map для хранения количества отличий
-
+# Создание map для хранения количества отличий
 differences_map <- list()
 
-\# Сравнение каждой последовательности с референсной
-
+# Сравнение каждой последовательности с референсной
 for (id in names(sequences)) {
-
-if (id != reference_id) {
-
-seq <- sequences\[\[id\]\]
-
-differences <- count_differences(reference_sequence, seq)
-
-differences_map\[\[id\]\] <- differences
-
+  if (id != reference_id) {
+    seq <- sequences[[id]]
+    differences <- count_differences(reference_sequence, seq)
+    differences_map[[id]] <- differences
+  }
 }
 
-}
+# Вывод результатов
+print(((mean(unlist(differences_map))/2)/16566)/(2.5*10^(-8)))
 
-\# Вывод результатов
-
-print(((mean(unlist(differences_map))/2)/16566)/(2.5\*10^(-8)))
