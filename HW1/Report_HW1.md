@@ -12,6 +12,8 @@ This project explores the phylogenetics and human evolution, focusing on the ori
 
 Using the MAFFT algorithm for alignment and the Neighbour Joining method for phylogeny, we constructed an evolutionary tree based on human mtDNA data. The tree was generated using IQTree. The ITOL (Interactive Tree Of Life) online resource was used to visualize the data obtained using IQTree. This database of mitochondrial DNA from various human populations was used to build the first tree: [https://figshare.com/ndownloader/files/30768763](https://figshare.com/ndownloader/files/30768763)
 
+![image](https://github.com/user-attachments/assets/a472a2b6-d9c7-4eca-9d8d-245a777c7dd0)
+
 *First tree based on MtDNA*
 
 #### 1.2. Rooting the Tree
