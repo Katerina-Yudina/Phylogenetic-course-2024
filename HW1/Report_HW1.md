@@ -20,6 +20,7 @@ Using the MAFFT algorithm for alignment and the Neighbour Joining method for phy
 
 After adding this datasets with mtDNA of Neandertal ([https://figshare.com/ndownloader/files/30768766](https://figshare.com/ndownloader/files/30768766)) and Denisovans ([https://figshare.com/ndownloader/files/30768775](https://figshare.com/ndownloader/files/30768775)) we got a tree with an outgroup of Neanderthals and Denisovans:
 
+![image](https://github.com/user-attachments/assets/4819417d-7827-4ed3-a6eb-0053b76a2c41)
 *Rooted tree with Neanderthal/Denisova*
 
 #### 1.3. Discussion
