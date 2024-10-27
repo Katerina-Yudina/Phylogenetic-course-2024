@@ -63,5 +63,5 @@ for (id in names(sequences)) {
 }
 
 # Вывод результатов
-print(((mean(unlist(differences_map))/2)/16566)/(2.5*10^(-8)))
+print(((mean(unlist(differences_map))/2)/16566)/(1.3*10^(-8)))
 
